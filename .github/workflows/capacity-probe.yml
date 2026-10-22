@@ -1,0 +1,14 @@
+name: Sandbox capacity probe
+on:
+  workflow_dispatch:
+permissions: {}
+jobs:
+  occupy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    strategy:
+      matrix:
+        lane: [one, two]
+    steps:
+      - name: Hold an unrelated hosted slot briefly
+        run: sleep 90
