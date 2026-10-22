@@ -1,11 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
-printf "MAIN sentinel hook must not run for captured v1.1.0\n" >&2
-exit 77
 cp -a source/src "recipes/$BUILD_PROJECT/src"
 version=$(cat source/VERSION)
 sed -e "s/@VERSION@/$version/g" -e "s/@REVISION@/$PACKAGE_RELEASE/g" source/ci/package/Makefile > "recipes/$BUILD_PROJECT/Makefile"
 compile() {
+    if [ "${GITHUB_RUN_ATTEMPT:-1}" = 1 ] && python3 - "$bundle" <<'FAIL_FIRST_DIRECT'
+import json,os,sys
+from pathlib import Path
+context=json.loads((Path(sys.argv[1])/'context.json').read_text())
+request=json.loads(os.environ['PACKAGE_REQUEST'])
+sys.exit(0 if context.get('cause')=='release' and request['target']=='openwrt-24.10-x86_64' else 1)
+FAIL_FIRST_DIRECT
+    then
+        printf 'D06 sandbox fixture: first direct side attempt fails; rerun this source run to recover.\n' >&2
+        exit 42
+    fi
     make -j"$(nproc)" "package/$BUILD_PROJECT/compile" V=s BUILD_LOG=1
     local target file
     local files=("recipes/$BUILD_PROJECT")

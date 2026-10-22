@@ -1,11 +1,12 @@
 {
-  "title": "demo-side MAIN sentinel, not release definition",
+  "title": "demo-side",
   "package": "demo-side",
   "depends_on": [
     "demo-core"
   ],
   "build": {
-    "native": "ci/package/native.sh"
+    "native": "ci/package/native.sh",
+    "openwrt": "ci/package/openwrt.sh"
   },
   "matrix": {
     "linux": [
@@ -17,6 +18,16 @@
           "amd64"
         ]
       }
-    ]
+    ],
+    "openwrt": {
+      "releases": [
+        "24.10.8",
+        "25.12.5"
+      ],
+      "targets": {
+        "x86_64": "x86/64",
+        "aarch64_generic": "armsr/armv8"
+      }
+    }
   }
 }
