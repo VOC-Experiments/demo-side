@@ -2,7 +2,7 @@
   "title": "demo-side",
   "package": "demo-side",
   "depends_on": [
-    "demo-core"
+    "not-allowlisted"
   ],
   "build": {
     "native": "ci/package/native.sh",
