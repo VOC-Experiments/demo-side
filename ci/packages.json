@@ -11,7 +11,7 @@
   "matrix": {
     "linux": [
       {
-        "distribution": "debian",
+        "distribution": "unsupported-os",
         "suite": "trixie",
         "image": "debian:trixie",
         "architectures": [
