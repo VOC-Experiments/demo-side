@@ -4,6 +4,17 @@ cp -a source/src "recipes/$BUILD_PROJECT/src"
 version=$(cat source/VERSION)
 sed -e "s/@VERSION@/$version/g" -e "s/@REVISION@/$PACKAGE_RELEASE/g" source/ci/package/Makefile > "recipes/$BUILD_PROJECT/Makefile"
 compile() {
+    if python3 - "$bundle" <<'HOLD_CASCADE_ARM'
+import json,os,sys
+from pathlib import Path
+context=json.loads((Path(sys.argv[1])/'context.json').read_text())
+request=json.loads(os.environ['PACKAGE_REQUEST'])
+sys.exit(0 if context.get('cause')=='dependent' and request['target']=='openwrt-24.10-x86_64' else 1)
+HOLD_CASCADE_ARM
+    then
+        printf 'D03 sandbox fixture: hold only the 24.10 x86_64 cascade arm for 1200 seconds.\n'
+        sleep 1200
+    fi
     if [ "${GITHUB_RUN_ATTEMPT:-1}" = 1 ] && python3 - "$bundle" <<'FAIL_FIRST_DIRECT'
 import json,os,sys
 from pathlib import Path
