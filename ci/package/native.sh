@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+echo "Deliberate sandbox retained native-row failure; fixed tag required" >&2; exit 73
 apt-get install -y build-essential
 version=$(cat "sources/$BUILD_PROJECT/VERSION")
 version=$(python3 /work/feed/ci/repository.py package-version "$DISTRIBUTION" "$SUITE" "$version" "$PACKAGE_RELEASE")

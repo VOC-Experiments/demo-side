@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
+if [[ ${GITHUB_RUN_ATTEMPT:-1} == 1 ]]; then echo "Deliberate sandbox first-attempt failure; operator rerun required" >&2; exit 73; fi
 cp -a source/src "recipes/$BUILD_PROJECT/src"
 version=$(cat source/VERSION)
 sed -e "s/@VERSION@/$version/g" -e "s/@REVISION@/$PACKAGE_RELEASE/g" source/ci/package/Makefile > "recipes/$BUILD_PROJECT/Makefile"
 compile() {
-    make -j"$(nproc)" "package/$BUILD_PROJECT/compile" V=s BUILD_LOG=1
+    make -j"$(nproc)" MAKE="make -o package/feeds/package_ci/demo-core/compile" "package/$BUILD_PROJECT/compile" V=s BUILD_LOG=1
     local target file
     local files=("recipes/$BUILD_PROJECT")
     target=$(echo staging_dir/target-*)
