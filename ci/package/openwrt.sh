@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
-if [[ ${GITHUB_RUN_ATTEMPT:-1} == 1 ]]; then echo "Deliberate sandbox first-attempt failure; operator rerun required" >&2; exit 73; fi
 cp -a source/src "recipes/$BUILD_PROJECT/src"
 version=$(cat source/VERSION)
 sed -e "s/@VERSION@/$version/g" -e "s/@REVISION@/$PACKAGE_RELEASE/g" source/ci/package/Makefile > "recipes/$BUILD_PROJECT/Makefile"
